@@ -1,0 +1,8 @@
+{
+  "name": "Sweets & Cakes — Confeitaria Fina & Cardápio Digital",
+  "description": "Confeitaria artesanal e cardápio de doces finos com bolos clássicos, frutas tropicais e criações exclusivas em Santa Cecília, SP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

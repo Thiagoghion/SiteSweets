@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "product": {
+      "title": "Product",
+      "description": "A product in the catalog",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "price": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 20 },
+        "description": { "type": "string", "maxLength": 500 },
+        "category": { "type": "string", "maxLength": 50 },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "imageFileName": { "type": "string", "maxLength": 100 },
+        "imageUrl": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price", "category"]
+    },
+    "category": {
+      "title": "Category",
+      "description": "Product categories",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 50 },
+        "order": { "type": "number" }
+      },
+      "required": ["name"]
+    },
+    "settings": {
+      "title": "App Settings",
+      "description": "Global application configuration",
+      "type": "object",
+      "properties": {
+        "menuPdfUrl": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "backup": {
+      "title": "Data Backup",
+      "description": "Snapshots of data for undo functionality",
+      "type": "object",
+      "properties": {
+        "products": { "type": "array", "items": { "type": "object" } },
+        "categories": { "type": "array", "items": { "type": "object" } },
+        "settings": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "products/{productId}": {
+      "schema": "product",
+      "description": "Collection of all products"
+    },
+    "categories/{categoryId}": {
+      "schema": "category",
+      "description": "Collection of product categories"
+    },
+    "settings/{settingId}": {
+      "schema": "settings",
+      "description": "App-wide settings (e.g. menu pdf)"
+    },
+    "backups/{backupId}": {
+      "schema": "backup",
+      "description": "Historical snapshots for undo"
+    }
+  }
+}

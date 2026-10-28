@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isAuthorized() {
+      let authorizedEmails = ['thiagoghion1982@gmail.com', 'sweetsandcakessp@gmail.com'];
+      return isSignedIn() && request.auth.token.email in authorizedEmails;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() <= 100
+        && data.price is number
+        && data.category is string && data.category.size() <= 50
+        && (data.unit == null || (data.unit is string && data.unit.size() <= 20))
+        && (data.description == null || (data.description is string && data.description.size() <= 500))
+        && (data.imageFileName == null || (data.imageFileName is string && data.imageFileName.size() <= 100));
+    }
+
+    function isValidCategory(data) {
+      return data.name is string && data.name.size() <= 50;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Products
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update: if isAuthorized() && isValidProduct(incoming());
+      allow delete: if isAuthorized();
+    }
+
+    // Categories
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create, update: if isAuthorized() && isValidCategory(incoming());
+      allow delete: if isAuthorized();
+    }
+
+    // Settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthorized();
+    }
+
+    // Backups
+    match /backups/{backupId} {
+      allow read, write: if isAuthorized();
+    }
+  }
+}
